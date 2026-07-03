@@ -4,19 +4,22 @@ import { ENV } from "./libs/env.js";
 
 const app = express();
 
-
+app.use(express.json());
+app.use(cors({
+    origin: ENV.ORIGIN_URL, Credentials: true
+}))
 app.get("/", (req, res) => {
     res.send("Helllo this is my new web app!")
 })
 
 const startServer = async () => {
     try {
-       await connectDb();
+        await connectDb();
         app.listen(ENV.PORT, () => {
             console.log(`Server is running on PORT: ${ENV.PORT}`);
         });
     } catch (error) {
-       console.log("Server start failed!", error);
+        console.log("Server start failed!", error);
     }
 }
 
