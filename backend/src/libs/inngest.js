@@ -5,7 +5,9 @@ import { connectDb } from "../db/connectToDB.js";
 export const inngest = new Inngest({ id: "skillQ" });
 
 const syncUser = inngest.createFunction({
-    id: "sync-user"}, { event: "clerk/user.created"},
+    id: "sync-user",
+    triggers: [{ event: "clerk/user.created" }],
+    },
      async ({event}) => {
         await connectDb();
 
@@ -23,7 +25,9 @@ const syncUser = inngest.createFunction({
 )
 
 const deleteUserFromDB = inngest.createFunction({
-    id: "delete-user"}, { event: "clerk/user.deleted"},
+    id: "delete-user",
+    triggers: [{ event: "clerk/user.deleted" }],
+},
      async ({event}) => {
         await connectDb();
 
