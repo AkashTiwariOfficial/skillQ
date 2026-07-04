@@ -4,12 +4,13 @@ import { ENV } from "./libs/env.js";
 import { serve } from "inngest/express";
 import { Inngest } from "inngest";
 import { functions, inngest } from "./libs/inngest.js";
+import cors from "cors";
 
 const app = express();
 
 app.use(express.json());
 app.use(cors({
-    origin: ENV.ORIGIN_URL, Credentials: true
+    origin: ENV.ORIGIN_URL, credentials: true
 }));
 
 app.use("/api/serve", serve({client: inngest, functions}))
