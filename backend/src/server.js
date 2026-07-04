@@ -1,7 +1,7 @@
 import express from "express";
 import { connectDb } from "./db/connectToDB.js";
 import { ENV } from "./libs/env.js";
-import serve from "inngest/express";
+import { serve } from "inngest/express";
 import { Inngest } from "inngest";
 import { functions, inngest } from "./libs/inngest.js";
 
