@@ -7,6 +7,7 @@ import { functions, inngest } from "./libs/inngest.js";
 import cors from "cors";
 import { clerkMiddleware } from '@clerk/express';
 import chatRoutes from "./routes/chat.routes.js";
+import sessionRoues from "./routes/session.routes.js";
 
 
 const app = express();
@@ -16,13 +17,14 @@ app.use(cors({
     origin: ENV.ORIGIN_URL, credentials: true
 }));
 app.use(clerkMiddleware());
-app.use("/api/serve", serve({client: inngest, functions}))
+app.use("/api/serve", serve({ client: inngest, functions }))
 
 app.get("/", (req, res) => {
     res.send("Helllo this is my new web app!")
 })
 
 app.use("/api/chat", chatRoutes);
+app.use("/api/sessions", sessionRoues);
 
 app.use((err, req, res, next) => [
     res.status(err.statusCode || 500).json({

@@ -1,9 +1,11 @@
+import { StreamClient } from "@stream-io/node-sdk";
 import { StreamChat } from "stream-chat";
 import { ENV } from "./env.js";
 
 const apiKey = ENV.STREAM_API_KEY;
 const apiSecret = ENV.STREAM_SECRET_KEY;
 
+export const streamClient = new StreamClient(apiKey, apiKey);
 export const chatClient = StreamChat.getInstance(apiKey, apiSecret);
 
 export const upserStreamtUser = async (userData) => {
