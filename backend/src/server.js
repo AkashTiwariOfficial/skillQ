@@ -5,7 +5,8 @@ import { serve } from "inngest/express";
 import { Inngest } from "inngest";
 import { functions, inngest } from "./libs/inngest.js";
 import cors from "cors";
-import { clerkMiddleware } from '@clerk/express'
+import { clerkMiddleware } from '@clerk/express';
+import chatRoutes from "./routes/chat.routes.js";
 
 
 const app = express();
@@ -20,6 +21,8 @@ app.use("/api/serve", serve({client: inngest, functions}))
 app.get("/", (req, res) => {
     res.send("Helllo this is my new web app!")
 })
+
+app.use("/api/chat", chatRoutes);
 
 app.use((err, req, res, next) => [
     res.status(err.statusCode || 500).json({
