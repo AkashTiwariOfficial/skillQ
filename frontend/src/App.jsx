@@ -6,7 +6,6 @@ import ProblemsPage from "./Pages/ProblemsPage";
 import { Toaster } from "react-hot-toast";
 
 function App() {
-  
   const { isSignedIn } = useUser();
 
   return (
