@@ -4,6 +4,7 @@ import { PROBLEMS } from "../data/problems.js";
 import { Link } from "react-router";
 import { ChevronRightIcon, Code2Icon } from "lucide-react";
 import { getDiffultyBadgeClass } from "../lib/utils.js";
+import { useActiveSession } from "../Hookes/useSession.js";
 
 export default function ProblemsPage() {
   const problems = Object.values(PROBLEMS);
@@ -15,6 +16,8 @@ export default function ProblemsPage() {
   const difficultProblemLen = problems.filter(
     (p) => p.difficulty === "Hard",
   ).length;
+
+   const { data, error, isLoading } = useActiveSession();
 
   return (
     <div className="min-h-screen bg-base-200">

@@ -1,9 +1,8 @@
 import { chatClient, streamClient } from "../libs/stream.js";
 import { Session } from "../models/session.model.js";
 import { ApiErrors } from "../utils/ApiErrors.js";
-import { ApiRespone } from "../utils/ApiResponse.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-
 
 
 
@@ -56,6 +55,7 @@ export const getActiveSessions = asyncHandler(async (req, res) => {
 
     const mySessions = await Session.find({ status: "active" })
         .populate("host", "name profilepic email clerkId")
+        .populate("participant", "name profilepic email clerkId")
         .sort({ createdAt: -1 })
         .limit(20);
 
@@ -75,14 +75,12 @@ export const getMyRecentSessions = asyncHandler(async (req, res) => {
         status: "completed",
         $or: [{ host: userId }, { participant: userId }]
     })
-            .populate("host", "name profilepic email clerkId")
-        .populate("participant", "name profilepic email clerkId")
         .sort({ createdAt: -1 })
         .limit(20);
 
     return res.status(200)
         .json(
-            new ApiRespone(200, myPastSessions, "All past sessions fetched successfully")
+            new ApiResponse(200, myPastSessions, "All past sessions fetched successfully")
         );
 
 });
@@ -101,7 +99,7 @@ export const getSessionById = asyncHandler(async (req, res) => {
     }
 
     return res.status(200).json(
-        new ApiRespone(200, session, "Session fetched successfully")
+        new ApiResponse(200, session, "Session fetched successfully")
     );
 
 });
@@ -120,7 +118,7 @@ export const joinSession = asyncHandler(async (req, res) => {
         throw new ApiErrors(404, "Session not found");
     }
 
-    if(session?.status === "completed"){
+    if (session?.status === "completed") {
         throw new ApiErrors(400, "Session already ended");
     }
 
@@ -128,7 +126,7 @@ export const joinSession = asyncHandler(async (req, res) => {
         throw new ApiErrors(409, "Session is full");
     }
 
-    if(session?.host.toString() === userId.toString()){
+    if (session?.host.toString() === userId.toString()) {
         throw new ApiErrors(400, "Host cannot join thier own session")
     }
 
@@ -140,7 +138,7 @@ export const joinSession = asyncHandler(async (req, res) => {
     await channel.addMembers([clerkId]);
 
     return res.status(200).json(
-        new ApiRespone(200, session, "Session joined successfully")
+        new ApiResponse(200, session, "Session joined successfully")
     );
 
 });
@@ -159,11 +157,11 @@ export const endSession = asyncHandler(async (req, res) => {
         throw new ApiErrors(404, "Session not found");
     }
 
-    if(session?.host.toString() !== userId.toString()){
+    if (session?.host.toString() !== userId.toString()) {
         throw new ApiErrors(403, "Session can be ended by the host");
     }
 
-    if(session?.status === "completed"){
+    if (session?.status === "completed") {
         throw new ApiErrors(403, "Session has already ended");
     }
 
@@ -173,12 +171,12 @@ export const endSession = asyncHandler(async (req, res) => {
     const channel = chatClient.channel("messaging", session?.callId);
     await channel.delete();
 
-        session.status = "completed";
+    session.status = "completed";
     await session.save();
 
     return res.status(200)
-    .json(
-        new ApiRespone(200, session, "Session ended successfully")
-    )
+        .json(
+            new ApiResponse(200, session, "Session ended successfully")
+        )
 
 });

@@ -1,12 +1,12 @@
 import { chatClient } from "../libs/stream.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiErrors } from "../utils/ApiErrors.js";
-import { ApiRespone } from "../utils/ApiResponse.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
 
 export const getChatStream = asyncHandler(async (req, res) => {
 
-    const token = chatClient.createToken(req.user.clerkId);
+    const token = chatClient.createToken(req?.user?.clerkId);
 
     if (!token) {
         throw new ApiErrors(500, "Internal Server Error while generating token for Stream");

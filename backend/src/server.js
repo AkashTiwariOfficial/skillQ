@@ -13,9 +13,11 @@ import sessionRoues from "./routes/session.routes.js";
 const app = express();
 
 app.use(express.json());
+
 app.use(cors({
     origin: ENV.ORIGIN_URL, credentials: true
 }));
+
 app.use(clerkMiddleware());
 app.use("/api/serve", serve({ client: inngest, functions }))
 
