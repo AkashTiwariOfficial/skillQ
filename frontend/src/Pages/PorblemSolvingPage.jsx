@@ -5,7 +5,7 @@ import Navbar from "../components/Navbar.jsx";
 import { Group, Panel, Separator } from "react-resizable-panels";
 import ProblemDescription from "../components/ProblemDescription.jsx";
 import CodeEditor from "../components/CodeEditor.jsx";
-import OutputPannel from "../components/outputPannel.jsx";
+import OutputPannel from "../components/OutputPannel.jsx";
 import confetti from "canvas-confetti";
 import { executeCode } from "../lib/jdoodle.js";
 

@@ -11,7 +11,7 @@ import Navbar from "../components/Navbar.jsx";
 import { Group, Panel, Separator } from "react-resizable-panels";
 import { sessionApi } from "../Api/session.js";
 import CodeEditor from "../components/CodeEditor.jsx";
-import OutputPannel from "../components/outputPannel.jsx";
+import OutputPannel from "../components/OutputPannel.jsx";
 import { getDiffultyBadgeClass } from "../lib/utils.js";
 import { Loader2Icon, LogOutIcon, PhoneOffIcon } from "lucide-react";
 import { useStreamClent } from "../hookes/useStreamClient.js";
