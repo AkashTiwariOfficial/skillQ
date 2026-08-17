@@ -18,7 +18,7 @@ import { useStreamClent } from "../hookes/useStreamClient.js";
 import VideoCallUI from "../components/VideoCallUI.jsx";
 import { StreamVideo, StreamCall } from "@stream-io/video-react-sdk";
 import confetti from "canvas-confetti";
-import { executeCode } from "../lib/jdoodle.js";
+import { executeCode } from "../lib/Jdoodle.js";
 
 export default function SessionPage() {
   const navigate = useNavigate();
