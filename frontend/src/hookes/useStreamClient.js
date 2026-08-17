@@ -24,6 +24,8 @@ export const useStreamClent = (isHost, isParticipant, session, isSessionLoading)
             if (!isHost && !isParticipant) return;
             if (!session?.callId) return;
 
+            if (session?.status === "completed") return;
+
             try {
 
                 const { token, userId, userName, userImage } = await sessionApi.getStreamToken();
@@ -41,7 +43,7 @@ export const useStreamClent = (isHost, isParticipant, session, isSessionLoading)
                 setCall(videoCall);
 
                 const apiKey = import.meta.env.VITE_STREAM_URL;
-                const chatClientInstance = StreamChat.getInstance(apiKey);
+                chatClientInstance = StreamChat.getInstance(apiKey);
 
                 await chatClientInstance.connectUser({
                     id: userId,
@@ -49,7 +51,7 @@ export const useStreamClent = (isHost, isParticipant, session, isSessionLoading)
                     image: userImage
                 }, token);
 
-                setChatClient(chatClientInstance); 
+                setChatClient(chatClientInstance);
 
                 const chatChannel = chatClientInstance.channel("messaging", session?.callId);
                 await chatChannel.watch();
@@ -71,12 +73,24 @@ export const useStreamClent = (isHost, isParticipant, session, isSessionLoading)
             (
                 async () => {
                     try {
-                        if (videoCall)
-                            await videoCall.leave();
+                        if (videoCall) {
+                            try {
+                                await videoCall.leave();
+                            } catch (error) {
+                                if (!error.message?.includes("already been left")) {
+                                    console.error("Error leaving call:", error);
+                                }
+                            }
+
+                            videoCall = null;
+                        }
+
                         if (chatClientInstance) {
                             await chatClientInstance.disconnectUser();
-                            await disConnectStreamClient();
+                            chatClientInstance = null;
                         }
+
+                        await disConnectStreamClient();
                     } catch (error) {
                         console.error("clean-up error", error);
                     }

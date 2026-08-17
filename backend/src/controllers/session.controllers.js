@@ -113,7 +113,7 @@ export const joinSession = asyncHandler(async (req, res) => {
     const userId = req.user?._id;
     const clerkId = req.user?.clerkId;
 
-    const session = await Session.findByIdy(id);
+    const session = await Session.findById(id);
 
     if (!session) {
         throw new ApiErrors(404, "Session not found");
@@ -152,7 +152,7 @@ export const endSession = asyncHandler(async (req, res) => {
     const userId = req.user?._id;
     const clerkId = req.user?.clerkId;
 
-    const session = await Session.findByIdy(id);
+    const session = await Session.findById(id);
 
     if (!session) {
         throw new ApiErrors(404, "Session not found");

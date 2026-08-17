@@ -4,25 +4,6 @@ const apiKey = import.meta.env.VITE_STREAM_URL;
 let client = null;
 
 
-export const initalizeStreamClient = async (user, token) => {
-
-    if (client && client?.user?.id === user?.id) return client;
-
-    if (client) {
-        await disconnectStreamClient();
-    }
-
-    if (!apiKey)
-        throw new Error("Stream Api key is not provided.");
-
-     client = new StreamVideoClient({
-        apiKey,
-        user,
-        token
-    })
-
-    return client;
-};
 
 
 export const disConnectStreamClient = async () => {
@@ -35,3 +16,26 @@ export const disConnectStreamClient = async () => {
         }
     }
 };
+
+
+export const initalizeStreamClient = async (user, token) => {
+
+    if (client && client?.user?.id === user?.id) return client;
+
+    if (client)
+        await disConnectStreamClient();
+
+
+    if (!apiKey)
+        throw new Error("Stream Api key is not provided.");
+
+    client = new StreamVideoClient({
+        apiKey,
+        user,
+        token
+    })
+
+    return client;
+};
+
+

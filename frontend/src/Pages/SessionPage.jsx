@@ -109,7 +109,7 @@ export default function SessionPage() {
                         </h1>
                         {problemData?.category && (
                           <p className="text-base-content/60 mt-1">
-                            {problemData.category}
+                            {problemData?.category}
                           </p>
                         )}
                         <p className="text-base-content/60 mt-2">
@@ -265,7 +265,7 @@ export default function SessionPage() {
           <Separator className="w-2 bg-base-300 hover:bg-primary transition-colors cursor-col-resize" />
 
           <Panel defaultSize={50} minSize={30}>
-             <div className="h-full bg-base-200 p-4 overflow-auto">
+            <div className="h-full bg-base-200 p-4 overflow-auto">
               {isIntializeCall ? (
                 <div className="h-full flex items-center justify-center">
                   <div className="text-center">
@@ -281,7 +281,9 @@ export default function SessionPage() {
                         <PhoneOffIcon className="w-12 h-12 text-error" />
                       </div>
                       <h2 className="card-title text-2xl">Connection Failed</h2>
-                      <p className="text-base-content/70">Unable to connect to the video call</p>
+                      <p className="text-base-content/70">
+                        Unable to connect to the video call
+                      </p>
                     </div>
                   </div>
                 </div>
