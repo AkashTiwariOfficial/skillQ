@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { sessionApi } from "../Api/session.js";
+import { sessionApi } from "../api/session.js";
 import { disConnectStreamClient, initalizeStreamClient } from "../lib/stream.js";
 import { StreamChat } from "stream-chat";
 import toast from "react-hot-toast";
