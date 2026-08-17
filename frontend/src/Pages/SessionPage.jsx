@@ -16,7 +16,7 @@ import { getDiffultyBadgeClass } from "../lib/utils.js";
 import { Loader2Icon, LogOutIcon, PhoneOffIcon } from "lucide-react";
 import { useStreamClent } from "../hookes/useStreamClient.js";
 import VideoCallUI from "../components/VideoCallUI.jsx";
-import { StreamVideo } from "@stream-io/video-react-sdk";
+import { StreamVideo, StreamCall } from "@stream-io/video-react-sdk";
 
 export default function SessionPage() {
   const navigate = useNavigate();

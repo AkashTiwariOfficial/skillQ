@@ -26,13 +26,8 @@ export const useStreamClent = (isHost, isParticipant, session, isSessionLoading)
 
             try {
 
-                const { token, userId, userName, userImage } = sessionApi.getStreamToken();
-                console.log("STREAM USER:", {
-                    userId,
-                    userName,
-                    userImage,
-                    token
-                });
+                const { token, userId, userName, userImage } = await sessionApi.getStreamToken();
+
                 const client = await initalizeStreamClient({
                     id: userId,
                     name: userName,
@@ -54,7 +49,7 @@ export const useStreamClent = (isHost, isParticipant, session, isSessionLoading)
                     image: userImage
                 }, token);
 
-                setChatClient(chatClientInstance); console.log(chatClientInstance);
+                setChatClient(chatClientInstance); 
 
                 const chatChannel = chatClientInstance.channel("messaging", session?.callId);
                 await chatChannel.watch();
