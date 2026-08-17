@@ -7,6 +7,7 @@ import { functions, inngest } from "./libs/inngest.js";
 import cors from "cors";
 import { clerkMiddleware } from '@clerk/express';
 import chatRoutes from "./routes/chat.routes.js";
+import executeRoutes from "./routes/jdoodle.routes.js";
 import sessionRoues from "./routes/session.routes.js";
 
 
@@ -27,6 +28,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/chat", chatRoutes);
 app.use("/api/sessions", sessionRoues);
+app.use("/api/execute", executeRoutes);   
 
 app.use((err, req, res, next) => [
     res.status(err.statusCode || 500).json({

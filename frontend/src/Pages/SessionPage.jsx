@@ -1,5 +1,5 @@
 import { useUser } from "@clerk/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router";
 import {
   useEndSession,
@@ -17,11 +17,14 @@ import { Loader2Icon, LogOutIcon, PhoneOffIcon } from "lucide-react";
 import { useStreamClent } from "../hookes/useStreamClient.js";
 import VideoCallUI from "../components/VideoCallUI.jsx";
 import { StreamVideo, StreamCall } from "@stream-io/video-react-sdk";
+import confetti from "canvas-confetti";
+import { executeCode } from "../lib/jdoodle.js";
 
 export default function SessionPage() {
   const navigate = useNavigate();
   const { user } = useUser();
   const { id } = useParams();
+  const runAbortControllerRef = useRef(null);
 
   const [output, setOutput] = useState(null);
   const [isRunning, setIsRunning] = useState(false);
@@ -57,7 +60,86 @@ export default function SessionPage() {
     setOutput(null);
   };
 
-  const handleRunCode = () => {};
+  const triggerCanvasConfetti = () => {
+    confetti({
+      particleCount: 80,
+      spread: 250,
+      origin: { x: 0.2, y: 0.6 },
+    });
+
+    confetti({
+      particleCount: 80,
+      spread: 250,
+      origin: { x: 0.8, y: 0.6 },
+    });
+  };
+
+  const normalizeOutput = (output) => {
+    return output
+      .trim()
+      .split("\n")
+      .map((line) =>
+        line
+          .trim()
+          // remove spaces after [ and before ]
+          .replace(/\[\s+/g, "[")
+          .replace(/\s+\]/g, "]")
+          // normalize spaces around commas to single space after comma
+          .replace(/\s*,\s*/g, ","),
+      )
+      .filter((line) => line.length > 0)
+      .join("\n");
+  };
+
+  const checkIfTestCasePassed = (actualOutput, expectedOutput) => {
+    const normalizedActual = normalizeOutput(actualOutput);
+    const normalizedExpected = normalizeOutput(expectedOutput);
+
+    return normalizedActual === normalizedExpected;
+  };
+
+  const handleRunCode = async () => {
+    if (!code || code.trim().length === 0) {
+      setOutput({
+        success: false,
+        error: "Please write some code before running.",
+      });
+      return;
+    }
+
+    // Cancel any run still in flight before starting a new one.
+    runAbortControllerRef.current?.abort();
+    const abortController = new AbortController();
+    runAbortControllerRef.current = abortController;
+
+    setIsRunning(true);
+    setOutput(null);
+
+    const result = await executeCode(language, code, "", {
+      signal: abortController.signal,
+    });
+
+    // If a newer run has already superseded this one, drop this result.
+    if (abortController.signal.aborted) return;
+
+    setIsRunning(false);
+
+    if (!result.success) {
+      setOutput(result);
+      return;
+    }
+
+    const expectedOutput = session?.problem?.expectedOutput?.[language];
+    const passed = expectedOutput
+      ? checkIfTestCasePassed(result.output, expectedOutput)
+      : null; // no expected output defined for this problem/language
+
+    setOutput({ ...result, passed });
+
+    if (passed) {
+      triggerCanvasConfetti();
+    }
+  };
 
   const handleEndSession = () => {
     if (
@@ -255,7 +337,7 @@ export default function SessionPage() {
                   <Separator className="h-2 bg-base-300 hover:bg-primary transition-colors cursor-row-resize" />
 
                   <Panel defaultSize={30} minSize={10}>
-                    <OutputPannel output={output} />
+                    <OutputPannel output={output} isRunning={isRunning} />
                   </Panel>
                 </Group>
               </Panel>

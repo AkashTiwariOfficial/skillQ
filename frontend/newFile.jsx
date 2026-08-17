@@ -12,8 +12,6 @@ import { executeCode } from "../lib/jdoodle.js";
 export default function PorblemSolvingPage() {
   const navigate = useNavigate();
   const { id } = useParams();
-    const runAbortControllerRef = useRef(null);
-  
 
   const [curProblemId, setCurProblemId] = useState("two-sum");
   const [language, setLanguage] = useState("python");
@@ -23,10 +21,19 @@ export default function PorblemSolvingPage() {
 
   const currentProblem = PROBLEMS[curProblemId];
 
+  // Tracks the in-flight run so a new click on "Run" cancels the previous
+  // one instead of letting two runs race and overwrite each other's output.
+  const runAbortControllerRef = useRef(null);
+
+  // Cancel any pending run if the user navigates away / component unmounts.
+  useEffect(() => {
+    return () => runAbortControllerRef.current?.abort();
+  }, []);
+
   useEffect(() => {
     if (id && PROBLEMS[id]) {
       setCurProblemId(id);
-      setCode(PROBLEMS[id].starterCode[language]);
+      setCode(PROBLEMS[curProblemId].starterCode[language]);
       setOutput(null);
     }
   }, [id, language]);
@@ -42,21 +49,20 @@ export default function PorblemSolvingPage() {
     navigate(`/problem/${probId}`);
   };
 
-  
   const triggerCanvasConfetti = () => {
     confetti({
       particleCount: 80,
       spread: 250,
       origin: { x: 0.2, y: 0.6 },
     });
-    
+
     confetti({
       particleCount: 80,
       spread: 250,
       origin: { x: 0.8, y: 0.6 },
     });
   };
-  
+
   const normalizeOutput = (output) => {
     return output
       .trim()
@@ -156,7 +162,7 @@ export default function PorblemSolvingPage() {
               <Separator className="h-2 bg-base-300 hover:bg-primary transition-colors cursor-row-resize" />
 
               <Panel defaultSize={30} minSize={20}>
-                <OutputPannel output={output} isRunning={isRunning}/>
+                <OutputPannel output={output} isRunning={isRunning} />
               </Panel>
             </Group>
           </Panel>
