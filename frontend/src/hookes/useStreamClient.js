@@ -1,0 +1,102 @@
+import { useEffect, useState } from "react"
+import { sessionApi } from "../Api/session.js";
+import { disConnectStreamClient, initalizeStreamClient } from "../lib/stream.js";
+import { StreamChat } from "stream-chat";
+import toast from "react-hot-toast";
+
+
+export const useStreamClent = (isHost, isParticipant, session, isSessionLoading) => {
+
+    const [call, setCall] = useState(null);
+    const [chatClient, setChatClient] = useState(null);
+    const [isIntializeCall, setIsInitalizeCall] = useState(true);
+    const [streamClient, setStreamClient] = useState(null);
+    const [channel, setChannel] = useState(null);
+
+    useEffect(() => {
+
+        let videoCall = null;
+        let chatClientInstance = null;
+
+        const initCall = async () => {
+
+            if (!session || isSessionLoading) return;
+            if (!isHost && !isParticipant) return;
+            if (!session?.callId) return;
+
+            try {
+
+                const { token, userId, userName, userImage } = sessionApi.getStreamToken();
+                console.log("STREAM USER:", {
+                    userId,
+                    userName,
+                    userImage,
+                    token
+                });
+                const client = await initalizeStreamClient({
+                    id: userId,
+                    name: userName,
+                    image: userImage
+                }, token);
+
+                setStreamClient(client);
+
+                videoCall = client.call("default", session?.callId)
+                await videoCall.join({ create: true });
+                setCall(videoCall);
+
+                const apiKey = import.meta.env.VITE_STREAM_URL;
+                const chatClientInstance = StreamChat.getInstance(apiKey);
+
+                await chatClientInstance.connectUser({
+                    id: userId,
+                    name: userName,
+                    image: userImage
+                }, token);
+
+                setChatClient(chatClientInstance); console.log(chatClientInstance);
+
+                const chatChannel = chatClientInstance.channel("messaging", session?.callId);
+                await chatChannel.watch();
+                setChannel(chatChannel);
+
+            } catch (error) {
+                toast.error("failed to join video call");
+                console.error("failed to init call", error);
+            } finally {
+                setIsInitalizeCall(false);
+            }
+        };
+
+        if (session && !isSessionLoading) initCall();
+
+        // clean-up => performace reason
+        return () => {
+            // iife
+            (
+                async () => {
+                    try {
+                        if (videoCall)
+                            await videoCall.leave();
+                        if (chatClientInstance) {
+                            await chatClientInstance.disconnectUser();
+                            await disConnectStreamClient();
+                        }
+                    } catch (error) {
+                        console.error("clean-up error", error);
+                    }
+                }
+            )();
+        }
+
+    }, [isHost, isParticipant, session, isSessionLoading]);
+
+
+    return {
+        streamClient,
+        chatClient,
+        channel,
+        isIntializeCall,
+        call
+    }
+}

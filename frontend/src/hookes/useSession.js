@@ -39,7 +39,7 @@ export const useMyRecentSession = () => {
 export const useGetSessionById = (id) => {
     const result = useQuery({
         queryKey: ["getSessionById", id],
-        queryFn: sessionApi.getSessionBYId,
+        queryFn: () => sessionApi.getSessionBYId(id),
         enabled: !!id,
         refetchInterval: 5000
     });
@@ -48,13 +48,12 @@ export const useGetSessionById = (id) => {
 };
 
 
-export const useJoinSession = (id) => {
+export const useJoinSession = () => {
     const result = useMutation({
-        mutationKey: ["joinSession", id],
+        mutationKey: ["joinSession"],
         mutationFn: sessionApi.joinSession,
         onSuccess: () => toast.success("Session joined Sucessfully"),
         onError: (error) => toast.error(error?.response?.data?.message || "Failed to join session"),
-        enabled: !!id,
     });
 
     return result;

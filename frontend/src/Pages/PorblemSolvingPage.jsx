@@ -17,7 +17,6 @@ export default function PorblemSolvingPage() {
   const [code, setCode] = useState(PROBLEMS[curProblemId].starterCode.python);
   const [output, setOutput] = useState(null);
   const [isRunning, setIsRunning] = useState(false);
-  
 
   const currentProblem = PROBLEMS[curProblemId];
 
@@ -36,14 +35,14 @@ export default function PorblemSolvingPage() {
     setOutput(null);
   };
 
-  const handleProblemChange = (prob) => {
-    setCurProblemId(prob);
+  const handleProblemChange = (probId) => {
+    navigate(`/problem/${probId}`);
   };
 
   const handleRunCode = () => {};
 
   const triggerCanvasConfetti = () => {
-        confetti({
+    confetti({
       particleCount: 80,
       spread: 250,
       origin: { x: 0.2, y: 0.6 },
@@ -56,7 +55,30 @@ export default function PorblemSolvingPage() {
     });
   };
 
-  const checkIfTestCasePassed = () => {};
+    const normalizeOutput = (output) => {
+
+    return output
+      .trim()
+      .split("\n")
+      .map((line) =>
+        line
+          .trim()
+          // remove spaces after [ and before ]
+          .replace(/\[\s+/g, "[")
+          .replace(/\s+\]/g, "]")
+          // normalize spaces around commas to single space after comma
+          .replace(/\s*,\s*/g, ",")
+      )
+      .filter((line) => line.length > 0)
+      .join("\n");
+  };
+
+  const checkIfTestCasePassed = (actualOutput, expectedOutput) => {
+    const normalizedActual = normalizeOutput(actualOutput);
+    const normalizedExpected = normalizeOutput(expectedOutput);
+
+    return normalizedActual == normalizedExpected;
+  };
 
   return (
     <div className="w-screen h-screen bg-base-100 flex flex-col">
@@ -64,14 +86,13 @@ export default function PorblemSolvingPage() {
 
       <div className="flex-1 min-h-0">
         <Group orientation="horizontal">
-
           {/* LEFT GROUP*/}
           <Panel defaultSize={40} minSize={30}>
-            <ProblemDescription 
-            currentProblem={currentProblem}
-            onProblemChange={handleProblemChange}
-            curProblemId={curProblemId}
-            allProblems={Object.values(PROBLEMS)}
+            <ProblemDescription
+              currentProblem={currentProblem}
+              onProblemChange={handleProblemChange}
+              curProblemId={curProblemId}
+              allProblems={Object.values(PROBLEMS)}
             />
           </Panel>
 
@@ -79,26 +100,23 @@ export default function PorblemSolvingPage() {
 
           {/* RIGHT GROUP*/}
           <Panel defaultSize={60} minSize={30}>
-
             <Group orientation="vertical">
-
               <Panel defaultSize={70} minSize={30}>
-                <CodeEditor 
-                code={code}
-                isRunning={isRunning}
-                language={language}
-                onLanguageChange={handleLanguageChange}
-                onCodeChange={setCode}
-                onRunCode={handleRunCode}
+                <CodeEditor
+                  code={code}
+                  isRunning={isRunning}
+                  language={language}
+                  onLanguageChange={handleLanguageChange}
+                  onCodeChange={setCode}
+                  onRunCode={handleRunCode}
                 />
               </Panel>
 
               <Separator className="h-2 bg-base-300 hover:bg-primary transition-colors cursor-row-resize" />
 
-              <Panel defaultSize={30} minSize={20} >
+              <Panel defaultSize={30} minSize={20}>
                 <OutputPannel />
               </Panel>
-
             </Group>
           </Panel>
         </Group>

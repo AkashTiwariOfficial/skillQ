@@ -12,7 +12,7 @@ export const getChatStream = asyncHandler(async (req, res) => {
         throw new ApiErrors(500, "Internal Server Error while generating token for Stream");
     }
 
-    const response = {
+    const resp = {
         token,
         userId: req.user.clerkId,
         userName: req.user.name,
@@ -20,6 +20,6 @@ export const getChatStream = asyncHandler(async (req, res) => {
     }
 
     return res.status(200).json(
-        new ApiResponse(200, response, "Token created successfully")
+        new ApiResponse(200, resp, "Token created successfully")
     )
 })

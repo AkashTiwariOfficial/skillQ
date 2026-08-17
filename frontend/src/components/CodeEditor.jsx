@@ -62,7 +62,7 @@ export default function CodeEditor({
           options={{
             fontSize: 17,
             lineNumbers: "on",
-            //  scrollBeyondLastLine: false,
+            // scrollBeyondLastLine: false,
             automaticLayout: true,
             minimap: { enabled: false },
           }}

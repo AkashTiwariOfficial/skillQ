@@ -19,11 +19,12 @@ export const createSession = asyncHandler(async (req, res) => {
     const userId = req.user?._id;
 
     const callId = `session_${Date.now()}_${Math.random().toString(36).substring(10)}`;
-
+ 
     const session = await Session.create({
         problem,
         difficulty,
-        host: userId
+        host: userId,
+        callId
     });
 
     if (!session) {

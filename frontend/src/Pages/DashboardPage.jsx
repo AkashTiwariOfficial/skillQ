@@ -13,6 +13,7 @@ import StatsCards from "../components/StatsCards.jsx";
 import ActiveSessions from "../components/ActiveSessions.jsx";
 import RecentSessions from "../components/RecentSessions.jsx";
 import CreateSessionModal from "../components/CreateSessionModal.jsx";
+import { sessionApi } from "../Api/session.js";
 
 export default function DashboardPage() {
   const navigate = useNavigate();
@@ -30,7 +31,6 @@ export default function DashboardPage() {
   const activeSessions = myActiveSessions?.data || [];
   const recentSessions = myRecentSessions?.data || [];
 
-
   const handleCreateSession = () => {
     if (!roomConfig.problem || !roomConfig.difficulty) {
       toast.error("Both feild are required to create Session!");
@@ -45,8 +45,7 @@ export default function DashboardPage() {
       {
         onSuccess: (data) => {
           setShowCreateeModal(false);
-          console.log(data);
-          navigate(`/sessions/${data?.data?._id}`);
+          navigate(`/session/${data?.data?._id}`);
         },
       },
     );
