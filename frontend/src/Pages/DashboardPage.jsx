@@ -6,7 +6,7 @@ import {
   useActiveSession,
   useCreateSessions,
   useMyRecentSession,
-} from "../Hookes/useSession.js";
+} from "../hookes/useSession.js";
 import toast from "react-hot-toast";
 import WelcomeSections from "../components/WelcomeSections.jsx";
 import StatsCards from "../components/StatsCards.jsx";
