@@ -13,7 +13,7 @@ import StatsCards from "../components/StatsCards.jsx";
 import ActiveSessions from "../components/ActiveSessions.jsx";
 import RecentSessions from "../components/RecentSessions.jsx";
 import CreateSessionModal from "../components/CreateSessionModal.jsx";
-import { sessionApi } from "../Api/session.js";
+import { sessionApi } from "../api/session.js";
 
 export default function DashboardPage() {
   const navigate = useNavigate();

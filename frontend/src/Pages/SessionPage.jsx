@@ -5,11 +5,11 @@ import {
   useEndSession,
   useGetSessionById,
   useJoinSession,
-} from "../Hookes/useSession.js";
+} from "../hookes/useSession.js";
 import { PROBLEMS } from "../data/problems.js";
 import Navbar from "../components/Navbar.jsx";
 import { Group, Panel, Separator } from "react-resizable-panels";
-import { sessionApi } from "../Api/session.js";
+import { sessionApi } from "../api/session.js";
 import CodeEditor from "../components/CodeEditor.jsx";
 import OutputPannel from "../components/OutputPannel.jsx";
 import { getDiffultyBadgeClass } from "../lib/utils.js";
