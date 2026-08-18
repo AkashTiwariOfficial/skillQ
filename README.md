@@ -1,7 +1,7 @@
 # 🚀 SkillQ — Remote Technical Interview Platform
 
 <p align="center">
-  <img src="./assets/readme-banner.png" alt="SkillQ Remote Interview Platform" width="100%">
+  <img src="./frontend/src/assets/readme-banner.png" alt="SkillQ Remote Interview Platform" width="100%">
 </p>
 
 <p align="center">
