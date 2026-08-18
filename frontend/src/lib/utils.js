@@ -14,4 +14,4 @@ export const getDiffultyBadgeClass = (difficulty) => {
             return "badge-ghost"
 
     }
-};
+}
