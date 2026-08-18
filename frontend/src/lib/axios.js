@@ -1,10 +1,16 @@
 import axios from "axios";
 
-
 const axiosInstance = axios.create({
     baseURL: import.meta.env.VITE_BASE_URL,
     withCredentials: true
 });
 
-export default axiosInstance;
+axiosInstance.interceptors.request.use(async (config) => {
+    const token = await window.Clerk?.session?.getToken();
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+});
 
+export default axiosInstance;
